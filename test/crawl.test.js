@@ -1,34 +1,34 @@
-const { normalizeUrl, getURLsFromHTML } = require('./crawl.js');
+const { normalizeUrl, getURLsFromHTML } = require('../src/crawl.js');
 const { test, expect } = require('@jest/globals');
 
 test('normalizeUrl strip protocol', () => {
-  const input = 'https://blog.boot.dev/path';
+  const input = 'https://sandbox.soychristian.com/path';
   const actual = normalizeUrl(input);
-  const expected = 'blog.boot.dev/path';
+  const expected = 'sandbox.soychristian.com/path';
 
   expect(actual).toEqual(expected);
 })
 
 test('normalizeUrl strip trailing slash', () => {
-  const input = 'https://blog.boot.dev/path/';
+  const input = 'https://sandbox.soychristian.com/path/';
   const actual = normalizeUrl(input);
-  const expected = 'blog.boot.dev/path';
+  const expected = 'sandbox.soychristian.com/path';
 
   expect(actual).toEqual(expected);
 })
 
 test('normalizeUrl capitals', () => {
-  const input = 'https://BLOG.boot.dev/path/';
+  const input = 'https://SANDBOX.soychristian.com/path/';
   const actual = normalizeUrl(input);
-  const expected = 'blog.boot.dev/path';
+  const expected = 'sandbox.soychristian.com/path';
 
   expect(actual).toEqual(expected);
 })
 
 test('normalizeUrl strip http', () => {
-  const input = 'http://blog.boot.dev/path/';
+  const input = 'http://sandbox.soychristian.com/path/';
   const actual = normalizeUrl(input);
-  const expected = 'blog.boot.dev/path';
+  const expected = 'sandbox.soychristian.com/path';
 
   expect(actual).toEqual(expected);
 })
@@ -37,15 +37,15 @@ test('getURLsFromHTML absolute', () => {
   const inputHTMLBody = `
     <html>
       <body>
-        <a href="https://blog.boot.dev/path/">
+        <a href="http://sandbox.soychristian.com/path/">
           Boot.dev Blog
         </a>
       </body>
     </html>
   `;
-  const inputBaseURL = 'https://blog.boot.dev/path/';
+  const inputBaseURL = 'http://sandbox.soychristian.com/path/';
   const actual = getURLsFromHTML(inputHTMLBody ,inputBaseURL);
-  const expected = ['https://blog.boot.dev/path/'];
+  const expected = ['http://sandbox.soychristian.com/path/'];
 
   expect(actual).toEqual(expected);
 })
@@ -61,9 +61,9 @@ test('getURLsFromHTML relative', () => {
       </body>
     </html>
   `;
-  const inputBaseURL = 'https://blog.boot.dev';
+  const inputBaseURL = 'http://sandbox.soychristian.com';
   const actual = getURLsFromHTML(inputHTMLBody ,inputBaseURL);
-  const expected = ['https://blog.boot.dev/path/'];
+  const expected = ['http://sandbox.soychristian.com/path/'];
 
   expect(actual).toEqual(expected);
 })
@@ -74,7 +74,7 @@ test('getURLsFromHTML both', () => {
   const inputHTMLBody = `
     <html>
       <body>
-        <a href="https://blog.boot.dev/path1/">
+        <a href="http://sandbox.soychristian.com/path1/">
           Boot.dev Blog Path One
         </a>
         <a href="/path2/">
@@ -83,9 +83,9 @@ test('getURLsFromHTML both', () => {
       </body>
     </html>
   `;
-  const inputBaseURL = 'https://blog.boot.dev';
+  const inputBaseURL = 'http://sandbox.soychristian.com';
   const actual = getURLsFromHTML(inputHTMLBody ,inputBaseURL);
-  const expected = ["https://blog.boot.dev/path1/", "https://blog.boot.dev/path2/"];
+  const expected = ["http://sandbox.soychristian.com/path1/", "http://sandbox.soychristian.com/path2/"];
 
   expect(actual).toEqual(expected);
 })
@@ -101,7 +101,7 @@ test('getURLsFromHTML invalid', () => {
       </body>
     </html>
   `;
-  const inputBaseURL = 'https://blog.boot.dev';
+  const inputBaseURL = 'http://sandbox.soychristian.com';
   const actual = getURLsFromHTML(inputHTMLBody ,inputBaseURL);
   const expected = [];
 

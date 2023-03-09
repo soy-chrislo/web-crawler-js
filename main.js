@@ -1,21 +1,20 @@
-const { crawlPage } = require('./crawl.js');
+const { crawlPage } = require('./src/crawl.js');
+const { printReport } = require('./src/report.js');
 
 
 async function main(){
-  checkArguments();
+  validateArguments();
 
   console.log('Starting craw');
 
   const baseURL = process.argv[2];
   console.log(`Base URL: ${baseURL}`);
   const pages = await crawlPage(baseURL, baseURL, {});
-  for (const page in pages){
-    console.log(`${page}: ${pages[page]}`);
-  }
+  printReport(pages);
 }
 
 
-function checkArguments(){
+function validateArguments(){
   if (process.argv.length < 3){
     console.error('No website URL provided');
     process.exit(1);
