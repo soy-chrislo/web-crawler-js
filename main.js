@@ -1,14 +1,17 @@
 const { crawlPage } = require('./crawl.js');
 
 
-function main(){
+async function main(){
   checkArguments();
 
   console.log('Starting craw');
 
   const baseURL = process.argv[2];
   console.log(`Base URL: ${baseURL}`);
-  crawlPage(baseURL);
+  const pages = await crawlPage(baseURL, baseURL, {});
+  for (const page in pages){
+    console.log(`${page}: ${pages[page]}`);
+  }
 }
 
 

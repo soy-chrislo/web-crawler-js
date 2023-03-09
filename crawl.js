@@ -1,25 +1,50 @@
 const { JSDOM } = require('jsdom');
 
-async function crawlPage(currentURL){
+async function crawlPage(baseURL, currentURL, pages){
+  
+  const baseURLObj = new URL(baseURL);
+  const currentURLObj = new URL(currentURL);
+  if (baseURLObj.hostname !== currentURLObj.hostname){
+    console.log(`Skipping: ${currentURL}, not on same host as base URL`);
+    return pages;
+  }
+  
+  const normalizedCurrentURL = normalizeUrl(currentURL);
+  if (pages[normalizedCurrentURL] > 0){
+    pages[normalizedCurrentURL] += 1;
+    console.log(`Skipping: ${currentURL}, already crawled`);
+    return pages;
+  }
+
+  pages[normalizedCurrentURL] = 1;  
   console.log(`Crawling: ${currentURL}`);
+
 
   try {
     const resp = await fetch(currentURL);
     if (resp.status > 399){
       console.error(`Error fetching URL: ${currentURL}, status: ${resp.status}`);
-      return;
+      return pages;
     }
     const contentType = resp.headers.get('content-type');
-    if (contentType.includes('text/html')){
+    if (!(contentType.includes('text/html'))){
       console.error(`Error fetching URL: ${currentURL}, content-type: ${contentType}, expected: text/html`);
-      return; 
+      return pages; 
     }
 
-    console.log(await resp.text());
+    const htmlBody = await resp.text();
+
+    nextURLs = getURLsFromHTML(htmlBody, baseURL);
+
+    for (const nextURL of nextURLs){
+      pages = await crawlPage(baseURL, nextURL, pages);
+    }
   } catch (e) {
     console.error(`Error fetching URL: ${currentURL}, reason: ${e.message}`);
   }
+  return pages;
 }
+
 
 function getURLsFromHTML(htmlBody, baseURL){
   const urls = [];
